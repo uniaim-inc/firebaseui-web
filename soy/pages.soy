@@ -1298,6 +1298,9 @@
  * Renders the list of supported sign-in providers.
  */
 {template .providerSignIn}
+  {@param? anonymousTitle: string} 
+  {@param? anonymousDesc: string} 
+  {@param? memberTitle: string} 
   {@param providerConfigs: list<[providerId:string, providerName:string|null, fullLabel:string|null,
       buttonColor:string|null, iconUrl: string|null]>} /** List of supported IdP configs. */
   <div class="firebaseui-container firebaseui-page-provider-sign-in{sp}
@@ -1306,11 +1309,23 @@
       <form onsubmit="return false;">
         <ul class="firebaseui-idp-list">
           {foreach $providerConfig in $providerConfigs}
-            <li class="firebaseui-list-item">
-              {call firebaseui.auth.soy2.element.idpButton}
-                {param providerConfig: $providerConfig /}
-              {/call}
-            </li>
+            {if $providerConfig.providerId != 'anonymous'}
+              <li class="firebaseui-list-item">
+                {call firebaseui.auth.soy2.element.idpButton}
+                  {param providerConfig: $providerConfig /}
+                {/call}
+              </li>
+            {else}
+              <li class="firebaseui-list-item">
+                <div style="font-size: 0.9em; margin-bottom:0.8em;">{ $anonymousTitle }</div>
+                {call firebaseui.auth.soy2.element.idpAnonymousButton}
+                  {param providerConfig: $providerConfig /}
+                {/call}
+                <div style="font-size:0.8em;margin:1.2em;">{ $anonymousDesc }</div>
+                <hr style="margin:1.2em;">
+                <div style="font-size: 0.9em; margin-bottom:0.8em;">{ $memberTitle }</div>
+              </li>
+            {/if}
           {/foreach}
         </ul>
       </form>
